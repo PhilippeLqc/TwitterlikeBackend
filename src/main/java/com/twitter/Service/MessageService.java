@@ -20,6 +20,8 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
 
+
+    // convert message entity to DTO
     public MessageDto convertToDto(Message message){
         MessageDto messageDto = new MessageDto();
         messageDto.setId(message.getId());
@@ -28,6 +30,8 @@ public class MessageService {
         messageDto.setReceiver(message.getReceiver().getId());
         return messageDto;
     }
+
+    // convert message DTO to entity Message
     public Message convertToEntity(MessageDto messageDto){
         User sender = userRepository.findById(messageDto.getSender()).orElse(null);
         User receiver = userRepository.findById(messageDto.getReceiver()).orElse(null);
@@ -38,6 +42,8 @@ public class MessageService {
                 .receiver(receiver)
                 .build();
     }
+
+
     // post a message to the database using DTO
     public MessageDto saveMessage(MessageDto messageDto){
         Message message = convertToEntity(messageDto);
@@ -58,10 +64,10 @@ public class MessageService {
     }
 
     // update a message by id using DTO
-    public MessageDto updateMessageById(Long id, Message message){
+    public MessageDto updateMessageById(Long id, MessageDto messageDto){
         Message existingMessage = messageRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Message not found"));
-        existingMessage.setMessage(message.getMessage());
+        existingMessage.setMessage(messageDto.getMessage());
         messageRepository.save(existingMessage);
         return convertToDto(messageRepository.save(existingMessage));
     }
@@ -71,7 +77,7 @@ public class MessageService {
         messageRepository.deleteById(id);
     }
 
-    //get all message between sender and receiver
+    //get all message between sender and receiver using DTO
     public List<MessageDto> getAllMessageBySenderAndReceiver(String sender, String receiver){
         List<Message> messages = messageRepository.findAllBySender_UsernameAndReceiver_Username(sender, receiver);
         return messages.stream().map(this::convertToDto).toList();

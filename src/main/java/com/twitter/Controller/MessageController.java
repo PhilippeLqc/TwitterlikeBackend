@@ -35,8 +35,8 @@ public class MessageController {
 
     @PutMapping("/message/{id}")
     //update message by id
-    public MessageDto updateMessageById(@PathVariable Long id, @RequestBody Message message){
-        return messageService.updateMessageById(id, message);
+    public MessageDto updateMessageById(@PathVariable Long id, @RequestBody MessageDto messageDto){
+        return messageService.updateMessageById(id, messageDto);
     }
 
     @DeleteMapping("/message/{id}")
